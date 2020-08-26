@@ -54,51 +54,32 @@ public class SoundPlayer implements Runnable {
         return sound == null;
     }
     
-    public synchronized void play(Sound sound, boolean loop) {
-        this.loop = loop;
-        this.sound = sound;
-        notify();
+    public void play(Sound sound, boolean loop) {
+        synchronized (this) {
+            this.loop = loop;
+            this.sound = sound;
+            notify();
+        }
     }
 
     @Override
-    public void run() {
-        while (soundManager.isRunning()) {
-            if (sound != null) {
-//                System.out.println("player id=" + id);
-//                int remaing = sound.getSize();
-//                int start = 0;
-//                int size = 400;
-//                while (remaing > 0) {
-//                    if (sound == null) {
-//                        break;
-//                    }
-//                    line.write(sound.getData(), start, Math.min(size, remaing));
-//                    start += size;
-//                    remaing -= size;
-//                    
-//                    try {
-//                        Thread.yield();
-//                        Thread.sleep(1);
-//                    } catch (InterruptedException ex) {
-//                    }
-//                }
-                line.write(sound.getData(), 0, sound.getSize());
-                if (!loop) {
-                    sound = null;
+    public void run() { 
+        synchronized (this) {
+            while (soundManager.isRunning()) {
+                if (sound != null) {
+                    line.write(sound.getData(), 0, sound.getSize());
+                    line.drain(); // This method blocks until the draining is complete
+                    if (!loop) {
+                        sound = null;
+                    }
+                }
+                if (sound == null) {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                    }
                 }
             }
-            
-            synchronized (this) {
-                try {
-                    wait();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-//            try {
-//                Thread.sleep(5);
-//            } catch (InterruptedException ex) {
-//            }
         }
     }
 

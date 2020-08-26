@@ -14,7 +14,7 @@ public class SoundManager {
     public static final AudioFormat AUDIO_FORMAT 
             = new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, 11025, 8, 1, 1, 11025, true);
     
-    public static final int MAX_SIMULTANEOUS_SOUNDS = 20;
+    public static final int MAX_SIMULTANEOUS_SOUNDS = 10;
     private boolean running = false;
     
     private final List<SoundPlayer> soundPlayers = new ArrayList<>();

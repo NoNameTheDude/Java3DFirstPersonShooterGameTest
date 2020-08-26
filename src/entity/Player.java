@@ -186,11 +186,11 @@ public class Player extends Entity implements PlayerListener, Runnable {
     // when click fire
     @Override
     public void run() {
-        if (!reloading && (System.currentTimeMillis() - fireTime) > 500) {
+        if (!reloading && (System.currentTimeMillis() - fireTime) > 150) {
             fire = true;
             fireTime = System.currentTimeMillis();
             md2FPS.setAnimation("fire");
-            SoundManager.getInstance().stop(Sounds.SHOOT);
+            //SoundManager.getInstance().stop(Sounds.SHOOT);
             SoundManager.getInstance().play(Sounds.SHOOT);
         }
     }
